@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'firebase_options.dart';
 import 'package:medicare_plus/constants/app_constants.dart';
 import 'package:medicare_plus/models/scan_model.dart';
 import 'package:medicare_plus/utils/theme_provider.dart';
@@ -23,7 +24,9 @@ import 'package:medicare_plus/screens/settings/notification_settings_screen.dart
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -57,15 +60,21 @@ class MyApp extends StatelessWidget {
               AppConstants.registerRoute: (context) => const RegisterScreen(),
               AppConstants.homeRoute: (context) => const HomeScreen(),
               AppConstants.profileRoute: (context) => const ProfileScreen(),
-              AppConstants.scanOptionsRoute: (context) => const ScanOptionsScreen(),
-              AppConstants.scanHistoryRoute: (context) => const ScanHistoryScreen(),
+              AppConstants.scanOptionsRoute: (context) =>
+                  const ScanOptionsScreen(),
+              AppConstants.scanHistoryRoute: (context) =>
+                  const ScanHistoryScreen(),
               AppConstants.historyRoute: (context) => const ScanHistoryScreen(),
-              AppConstants.reminderRoute: (context) => const RemindersListScreen(),
-              AppConstants.remindersRoute: (context) => const RemindersListScreen(),
-              AppConstants.specialistMapRoute: (context) => const SpecialistMapScreen(),
+              AppConstants.reminderRoute: (context) =>
+                  const RemindersListScreen(),
+              AppConstants.remindersRoute: (context) =>
+                  const RemindersListScreen(),
+              AppConstants.specialistMapRoute: (context) =>
+                  const SpecialistMapScreen(),
               AppConstants.feedbackRoute: (context) => const FeedbackScreen(),
               AppConstants.settingsRoute: (context) => const SettingsScreen(),
-              AppConstants.notificationSettingsRoute: (context) => const NotificationSettingsScreen(),
+              AppConstants.notificationSettingsRoute: (context) =>
+                  const NotificationSettingsScreen(),
             },
             onGenerateRoute: (settings) {
               if (settings.name == AppConstants.scanResultRoute) {

@@ -1,11 +1,11 @@
 {
-    "name": "medicare_plus",
-    "short_name": "medicare_plus",
+    "name": "Medicare+",
+    "short_name": "Medicare+",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#FFFFFF",
+    "theme_color": "#FFFFFF",
+    "description": "Self-screening for skin and eye conditions using AI.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

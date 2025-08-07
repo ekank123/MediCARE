@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:medicare_plus/models/user_model.dart';
 
 class AuthService {
@@ -129,9 +130,40 @@ class AuthService {
   // Sign in with Google
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      // This would require google_sign_in package and additional setup
-      // Implementation would go here
-      throw UnimplementedError('Google Sign In not implemented yet');
+      // Import the google_sign_in package
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      
+      // If user canceled the sign-in flow, return null
+      if (googleUser == null) {
+        return null;
+      }
+      
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      
+      // Once signed in, return the UserCredential
+      final userCredential = await _auth.signInWithCredential(credential);
+      
+      // Check if this is a new user
+      if (userCredential.additionalUserInfo?.isNewUser ?? false) {
+        // Create user profile in Firestore
+        await _createUserProfile(
+          userCredential.user!.uid,
+          userCredential.user!.displayName ?? 'User',
+          userCredential.user!.email ?? '',
+        );
+      }
+      
+      return userCredential;
     } catch (e) {
       rethrow;
     }

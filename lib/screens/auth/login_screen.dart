@@ -117,6 +117,44 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _signInWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final userCredential = await _authService.signInWithGoogle();
+
+      // If user canceled the sign-in flow
+      if (userCredential == null) {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed(AppConstants.homeRoute);
+      }
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        _errorMessage = _getErrorMessage(e.code);
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage =
+            'An error occurred during Google sign in. Please try again.';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,44 +168,25 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Logo and app name
+                  // Logo only - enlarged to cover upper screen
                   Container(
                     alignment: Alignment.center,
-                    margin: const EdgeInsets.only(bottom: 40),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            color: AppConstants.primaryColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.medical_services_outlined,
-                            size: 60,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          AppConstants.appName,
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: AppConstants.primaryColor,
-                              ),
-                        ),
-                      ],
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: Image.asset(
+                      'assets/images/transplogo.png',
+                      width: 250,
+                      height: 250,
                     ),
                   ),
 
                   // Error message
-                  if (_errorMessage != null) ...[                    
+                  if (_errorMessage != null) ...[
                     Container(
                       padding: const EdgeInsets.all(AppConstants.smallPadding),
                       decoration: BoxDecoration(
                         color: AppConstants.errorColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                            AppConstants.defaultBorderRadius),
                       ),
                       child: Text(
                         _errorMessage!,
@@ -190,7 +209,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
                       }
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(value)) {
                         return 'Please enter a valid email';
                       }
                       return null;
@@ -207,7 +227,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                         ),
                         onPressed: () {
                           setState(() {
@@ -223,7 +245,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 2),
 
                   // Forgot password
                   Align(
@@ -233,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const Text('Forgot Password?'),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 10),
 
                   // Login button
                   ElevatedButton(
@@ -249,7 +271,20 @@ class _LoginScreenState extends State<LoginScreen> {
                           )
                         : const Text('Login'),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 10),
+
+                  // Social login options
+                  const Text(
+                    'Or sign in with',
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  // Google sign in
+                  _socialLoginButton(
+                    icon: Icons.g_translate, // Using a Google-related icon
+                    onPressed: _signInWithGoogle,
+                  ),
+                  const SizedBox(height: 10),
 
                   // Register link
                   Row(
@@ -264,45 +299,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   AppConstants.registerRoute,
                                 );
                               },
-                        child: const Text('Register'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Social login options
-                  const Text(
-                    'Or sign in with',
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Google sign in
-                      _socialLoginButton(
-                        icon: Icons.g_mobiledata,
-                        onPressed: () {
-                          // TODO: Implement Google sign in
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Google Sign In not implemented yet'),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(width: 16),
-                      // Apple sign in
-                      _socialLoginButton(
-                        icon: Icons.apple,
-                        onPressed: () {
-                          // TODO: Implement Apple sign in
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Apple Sign In not implemented yet'),
-                            ),
-                          );
-                        },
+                        child: const Text('SIGN UP'),
                       ),
                     ],
                   ),
@@ -315,18 +312,27 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _socialLoginButton({required IconData icon, required VoidCallback onPressed}) {
+  Widget _socialLoginButton(
+      {required IconData icon, required VoidCallback onPressed}) {
     return InkWell(
       onTap: _isLoading ? null : onPressed,
-      borderRadius: BorderRadius.circular(50),
+      borderRadius: BorderRadius.circular(8),
       child: Container(
-        width: 50,
-        height: 50,
+        width: 180,
+        height: 45,
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.grey.shade300),
         ),
-        child: Icon(icon, size: 30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 24),
+            const SizedBox(width: 8),
+            const Text('Continue with Google',
+                style: TextStyle(fontWeight: FontWeight.w500)),
+          ],
+        ),
       ),
     );
   }

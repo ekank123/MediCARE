@@ -9,7 +9,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -64,29 +65,13 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo placeholder - replace with actual logo
-              Container(
-                width: 150,
-                height: 150,
-                decoration: BoxDecoration(
-                  color: AppConstants.primaryColor,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.medical_services_outlined,
-                  size: 80,
-                  color: Colors.white,
-                ),
+              // App logo - enlarged to cover upper screen
+              Image.asset(
+                'assets/images/transplogo.png',
+                width: 250,
+                height: 250,
               ),
-              const SizedBox(height: 24),
-              Text(
-                AppConstants.appName,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppConstants.primaryColor,
-                    ),
-              ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 16),
               Text(
                 AppConstants.appDescription,
                 style: Theme.of(context).textTheme.bodyLarge,

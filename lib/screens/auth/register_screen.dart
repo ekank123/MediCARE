@@ -123,7 +123,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 16),
                         Text(
                           AppConstants.appName,
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: AppConstants.primaryColor,
                               ),
@@ -138,12 +141,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
 
                   // Error message
-                  if (_errorMessage != null) ...[                    
+                  if (_errorMessage != null) ...[
                     Container(
                       padding: const EdgeInsets.all(AppConstants.smallPadding),
                       decoration: BoxDecoration(
                         color: AppConstants.errorColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                            AppConstants.defaultBorderRadius),
                       ),
                       child: Text(
                         _errorMessage!,
@@ -183,7 +187,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
                       }
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(value)) {
                         return 'Please enter a valid email';
                       }
                       return null;
@@ -200,7 +205,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                         ),
                         onPressed: () {
                           setState(() {
@@ -230,7 +237,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                          _obscureConfirmPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                         ),
                         onPressed: () {
                           setState(() {
@@ -302,7 +311,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           // TODO: Implement Google sign in
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Google Sign In not implemented yet'),
+                              content:
+                                  Text('Google Sign In not implemented yet'),
                             ),
                           );
                         },
@@ -315,7 +325,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           // TODO: Implement Apple sign in
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Apple Sign In not implemented yet'),
+                              content:
+                                  Text('Apple Sign In not implemented yet'),
                             ),
                           );
                         },
@@ -331,7 +342,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _socialLoginButton({required IconData icon, required VoidCallback onPressed}) {
+  Widget _socialLoginButton(
+      {required IconData icon, required VoidCallback onPressed}) {
     return InkWell(
       onTap: _isLoading ? null : onPressed,
       borderRadius: BorderRadius.circular(50),
